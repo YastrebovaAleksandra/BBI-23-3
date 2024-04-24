@@ -1,0 +1,82 @@
+﻿using System;
+using System.Text.RegularExpressions;
+
+struct Student
+{
+    private string _group;
+    private int _exam1;
+    private int _exam2;
+    private int _exam3;
+    private int _exam4;
+    private int _exam5;
+    private double _finalscore;
+    public Student(string group, int exam1, int exam2, int exam3, int exam4, int exam5)
+    {
+        _group = group;
+        _exam1 = exam1;
+        _exam2 = exam2;
+        _exam3 = exam3;
+        _exam4 = exam4;
+        _exam5 = exam5;
+        _finalscore = (exam1 + exam2 + exam3 + exam4 + exam5) / 5;
+    }
+    public double Finalscore => _finalscore;
+    public void Print()
+    {
+
+        Console.WriteLine(_group + "          " + _exam1 + "           " + _exam2 + "              " + _exam3 + "               " + _exam4 + "               " + _exam5 + "               " + _finalscore);
+    }
+}
+struct Group
+{
+    private Student[] _students;
+    public Group(Student[] students)
+    {
+        _students = students;
+    }
+    public void Print()
+    {
+        for (int i = 0; i < _students.Length; i++)
+        {
+            _students[i].Print();
+        }
+    }
+}
+
+internal class Program
+{
+    static void Sort(Student[] participants)
+    {
+        for (int i = 1; i < participants.Length; i++)
+        {
+            for (int j = 1; j < participants.Length; j++)
+            {
+                if (participants[j].Finalscore > participants[j - 1].Finalscore)
+                {
+                    Student temp = participants[j];
+                    participants[j] = participants[j - 1];
+                    participants[j - 1] = temp;
+                }
+            }
+        }
+    }
+    static void Main(string[] args)
+    {
+        Student[] participants = new Student[5]
+        {
+            new Student("группа1", 87, 78, 76, 56, 79),
+            new Student("группа2", 78, 59, 76, 82, 74),
+            new Student("группа3", 77, 87, 56, 71, 68),
+            new Student("группа4", 72, 54, 59, 99, 52),
+            new Student("груупа5", 63, 68, 98, 82, 74),
+
+        };
+
+        Sort(participants);
+        Group group = new Group(participants);
+        Console.WriteLine("Список групп :");
+        Console.WriteLine("Группа\tЭкзамен 1\tЭкзамен2\tЭкзамен3\tЭкзамен4\tЭкзамен5\tСредний балл");
+        group.Print();
+        Console.ReadKey();
+    }
+}
