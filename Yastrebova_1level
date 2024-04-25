@@ -1,0 +1,84 @@
+﻿using System;
+
+abstract class Student
+{
+    protected string name;
+    protected int grade;
+    protected int missedClasses;
+
+    public string Name => name;
+    public int Grade => grade;
+    public int MissedClasses => missedClasses;
+
+    public Student(string name, int grade, int missedClasses)
+    {
+        this.name = name;
+        this.grade = grade;
+        this.missedClasses = missedClasses;
+    }
+
+    public abstract void Print();
+}
+
+class InformaticsStudent : Student
+{
+    public InformaticsStudent(string name, int grade, int missedClasses) : base(name, grade, missedClasses)
+    {
+    }
+
+    public override void Print()
+    {
+        Console.WriteLine("Фамилия {0} \t {1} балл \t кол-во пропусков {2}", name, grade, missedClasses);
+    }
+}
+
+class MathStudent : Student
+{
+    public MathStudent(string name, int grade, int missedClasses) : base(name, grade, missedClasses)
+    {
+    }
+
+    public override void Print()
+    {
+        Console.WriteLine("Фамилия {0} \t {1} балл \t кол-во пропусков {2}", name, grade, missedClasses);
+    }
+}
+
+class Program
+{
+    static void Main(string[] args)
+    {
+        InformaticsStudent[] informaticsStudents = new InformaticsStudent[7];
+        informaticsStudents[0] = new InformaticsStudent("Kate", 6, 3);
+        informaticsStudents[1] = new InformaticsStudent("Anna", 4, 1);
+        informaticsStudents[2] = new InformaticsStudent("Kirill", 2, 6);
+        informaticsStudents[3] = new InformaticsStudent("Lev", 3, 1);
+        informaticsStudents[4] = new InformaticsStudent("Maria", 2, 4);
+        informaticsStudents[5] = new InformaticsStudent("Mira", 5, 2);
+        informaticsStudents[6] = new InformaticsStudent("Aleksey", 6, 4);
+
+
+        MathStudent[] mathStudents = new MathStudent[7];
+        mathStudents[0] = new MathStudent("Luka", 4, 2);
+        mathStudents[1] = new MathStudent("Artem", 5, 4);
+        mathStudents[2] = new MathStudent("Vanya", 2, 3);
+        mathStudents[3] = new MathStudent("Kris", 6, 1);
+        mathStudents[4] = new MathStudent("Nord", 3, 7);
+        mathStudents[5] = new MathStudent("Max", 5, 3);
+        mathStudents[6] = new MathStudent("Karl", 2, 5);
+
+        Console.WriteLine("Студенты по информатике:");
+        for (int i = 0; i < informaticsStudents.Length; i++)
+        {
+            informaticsStudents[i].Print();
+        }
+
+        Console.WriteLine("\nСтуденты по математике:");
+        for (int i = 0; i < mathStudents.Length; i++)
+        {
+            mathStudents[i].Print();
+        }
+
+        Console.ReadKey();
+    }
+}

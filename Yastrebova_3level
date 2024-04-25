@@ -1,0 +1,131 @@
+﻿using System;
+
+public class Student
+{
+    private string _firstName; private string _lastName;
+    private int[] _exams; protected double _averageScore;
+    public Student(string firstName, string lastName, int[] exams)
+    {
+        _firstName = firstName;
+        _lastName = lastName; _exams = exams;
+        _averageScore = CalculateAverageScore();
+    }
+    public double CalculateAverageScore()
+    {
+        int sum = 0;
+        foreach (int exam in _exams)
+        {
+            sum += exam;
+        }
+        return (double)sum / _exams.Length;
+    }
+    public void Print()
+    {
+        Console.WriteLine($"{_lastName} {_firstName} {_averageScore}");
+    }
+}
+public class Group
+{
+    protected Student[] _students;
+    protected double _avarageScore;
+    public Group(Student[] students)
+    {
+        _students = students;
+        _avarageScore = CalculateAverageScore();
+    }
+    public virtual double CalculateAverageScore()
+    {
+        double totalScore = 0;
+        foreach (Student student in _students)
+        {
+            totalScore += student.CalculateAverageScore();
+        }
+        return totalScore / _students.Length;
+    }
+    public virtual void Print()
+    {
+        for (int i = 0; i < _students.Length; i++)
+        {
+            _students[i].Print();
+
+        }
+        Console.Write(" " + _avarageScore);
+        Console.WriteLine();
+    }
+}
+public class GroupA : Group
+{
+    public GroupA(Student[] students) : base(students) { }
+    public override void Print()
+    {
+        for (int i = 0; i < _students.Length; i++)
+        {
+            _students[i].Print();
+
+        }
+        Console.Write("A " + _avarageScore);
+        Console.WriteLine();
+    }
+}
+public class GroupB : Group
+{
+    public GroupB(Student[] students) : base(students) { }
+    public override void Print()
+    {
+        for (int i = 0; i < _students.Length; i++)
+        {
+            _students[i].Print();
+
+        }
+        Console.Write("B " + _avarageScore);
+        Console.WriteLine();
+    }
+}
+public class GroupC : Group
+{
+    public GroupC(Student[] students) : base(students) { }
+    public override void Print()
+    {
+        for (int i = 0; i < _students.Length; i++)
+        {
+            _students[i].Print();
+
+        }
+        Console.Write("C " + _avarageScore);
+        Console.WriteLine();
+    }
+}
+internal class Program
+{
+    static void Main(string[] args)
+    {
+        Student[] studentsA = new Student[]
+        {
+            new Student("Mari", "Ivanova", new int[] { 87, 77, 65, 98 }),
+            new Student("Misha", "Smirnov", new int[] { 89, 88, 76, 66 }),
+        };
+
+        Student[] studentsB = new Student[]
+        {
+            new Student("Anton", "Volkov", new int[] { 67, 65, 87, 93 }),
+            new Student("Dasha", "Mishina", new int[] { 68, 59, 67, 88 }),
+        };
+        Student[] studentsC = new Student[]
+        {
+            new Student("Kate", "Savina", new int[] { 80, 79, 62, 59 }),
+            new Student("Alex", "Lobov", new int[] { 65, 73, 84, 95 }),
+        };
+        Group gr = new Group(studentsC);
+        GroupA groupA = new GroupA(studentsA);
+        GroupB groupB = new GroupB(studentsB);
+        GroupC groupC = new GroupC(studentsC);
+        Group[] groups = new Group[] { groupA, groupB, groupC };
+
+        Console.WriteLine("Группа\tСредний балл за сессию");
+        for (int i = 0; i < groups.Length; i++)
+        {
+            groups[i].Print();
+        }
+        Console.ReadKey();
+    }
+}
