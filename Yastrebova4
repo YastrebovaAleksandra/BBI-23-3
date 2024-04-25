@@ -1,0 +1,43 @@
+﻿using System;
+using System.Text.RegularExpressions;
+
+public abstract class Task
+{
+    protected string text;
+
+    public Task(string text)
+    {
+        this.text = text;
+    }
+
+    public abstract void FindWordsWithSequence(string sequence);
+}
+
+public class WordsWithSequenceTask : Task
+{
+    public WordsWithSequenceTask(string text) : base(text)
+    {
+    }
+
+    public override void FindWordsWithSequence(string sequence)
+    {
+        string pattern = $@"\b\w*{sequence}\w*\b";
+        MatchCollection matches = Regex.Matches(text, pattern, RegexOptions.IgnoreCase);
+
+        foreach (Match match in matches)
+        {
+            Console.WriteLine(match.Value);
+        }
+    }
+}
+
+class Program
+{
+    static void Main()
+    {
+        string text = "Дружба - это важно. Настоящий друг всегда рядом, поддержит и обрадует. В дружбе главное - искренность и уважение. Не забывайте ценить и беречь друзей, они делают жизнь лучше.";
+
+        Task task = new WordsWithSequenceTask(text);
+        task.FindWordsWithSequence("ск");
+    }
+}

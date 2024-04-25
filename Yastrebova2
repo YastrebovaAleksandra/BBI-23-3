@@ -1,0 +1,54 @@
+﻿using System;
+
+public abstract class Task
+{
+    protected string text;
+
+    public Task(string text)
+    {
+        this.text = text;
+    }
+
+    public abstract void SplitText();
+}
+
+public class TextSplittingTask : Task
+{
+    public TextSplittingTask(string text) : base(text)
+    {
+    }
+
+    public override void SplitText()
+    {
+        int currentIndex = 0;
+
+        while (currentIndex < text.Length)
+        {
+            int nextIndex = Math.Min(currentIndex + 50, text.Length);
+
+            while (nextIndex < text.Length && text[nextIndex] != ' ' && text[nextIndex] != '\n')
+            {
+                nextIndex--;
+            }
+
+            if (nextIndex == currentIndex)
+            {
+                nextIndex = currentIndex + 50;
+            }
+
+            Console.WriteLine(text.Substring(currentIndex, nextIndex - currentIndex).Trim());
+            currentIndex = nextIndex + 1;
+        }
+    }
+}
+
+class Program
+{
+    static void Main()
+    {
+        string text = "Дружба - это важно. Настоящий друг всегда рядом, поддержит и обрадует. В дружбе главное - искренность и уважение. Не забывайте ценить и беречь друзей, они делают жизнь лучше.";
+
+        Task task = new TextSplittingTask(text);
+        task.SplitText();
+    }
+}

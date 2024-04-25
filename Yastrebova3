@@ -1,0 +1,67 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+
+public abstract class Task
+{
+    protected string text;
+
+    public Task(string text)
+    {
+        this.text = text;
+    }
+
+    public abstract void PrintStartingLetters();
+}
+
+public class StartingLettersTask : Task
+{
+    public StartingLettersTask(string text) : base(text)
+    {
+    }
+
+    public override void PrintStartingLetters()
+    {
+        Dictionary<char, int> startingLettersFrequency = new Dictionary<char, int>();
+
+        string[] words = text.Split(new char[] { ' ', '\n', '\t', '\r' }, StringSplitOptions.RemoveEmptyEntries);
+
+        foreach (string word in words)
+        {
+            if (word.Length > 0)
+            {
+                char startingLetter = word[0];
+                if (char.IsLetter(startingLetter))
+                {
+                    startingLetter = char.ToLower(startingLetter); // consider case-insensitive
+                    if (startingLettersFrequency.ContainsKey(startingLetter))
+                    {
+                        startingLettersFrequency[startingLetter]++;
+                    }
+                    else
+                    {
+                        startingLettersFrequency[startingLetter] = 1;
+                    }
+                }
+            }
+        }
+
+        var sortedLetters = startingLettersFrequency.OrderByDescending(pair => pair.Value);
+
+        foreach (var pair in sortedLetters)
+        {
+            Console.WriteLine($"Буква '{pair.Key}' начинает слова {pair.Value} раз");
+        }
+    }
+}
+
+class Program
+{
+    static void Main()
+    {
+        string text = "Дружба - это важно. Настоящий друг всегда рядом, поддержит и обрадует. В дружбе главное - искренность и уважение. Не забывайте ценить и беречь друзей, они делают жизнь лучше";
+
+        Task task = new StartingLettersTask(text);
+        task.PrintStartingLetters();
+    }
+}

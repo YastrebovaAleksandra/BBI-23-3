@@ -1,0 +1,57 @@
+﻿using System;
+using System.Text.RegularExpressions;
+
+public abstract class Task
+{
+    protected string text;
+
+    public Task(string text)
+    {
+        this.text = text;
+    }
+
+    public abstract void FindAndCalculateSum();
+}
+
+public class SumNumbersTask : Task
+{
+    public SumNumbersTask(string text) : base(text)
+    {
+    }
+
+    public override void FindAndCalculateSum()
+    {
+        int sum = 0;
+        string pattern = @"\b\d{1,2}\b"; // Шаблон для поиска чисел от 1 до 10
+
+        foreach (Match match in Regex.Matches(text, pattern))
+        {
+            int number = int.Parse(match.Value);
+            if (number >= 1 && number <= 10)
+            {
+                sum += number;
+            }
+        }
+
+        Console.WriteLine("Сумма чисел от 1 до 10 в тексте: " + sum);
+    }
+
+    public override string ToString()
+    {
+        return text;
+    }
+}
+
+class Program
+{
+    static void Main()
+    {
+        string text = "Слова и числа 1 2 3 4 5 6 7 8 9 10 ";
+
+        Task task = new SumNumbersTask(text);
+        task.FindAndCalculateSum();
+
+        Console.WriteLine("Исходный текст:");
+        Console.WriteLine(task.ToString());
+    }
+}

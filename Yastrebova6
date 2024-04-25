@@ -1,0 +1,46 @@
+﻿using System;
+using System.Linq;
+
+public abstract class Task
+{
+    protected string surnames;
+
+    public Task(string surnames)
+    {
+        this.surnames = surnames;
+    }
+
+    public abstract void SortSurnames();
+}
+
+public class SortSurnamesTask : Task
+{
+    public SortSurnamesTask(string surnames) : base(surnames)
+    {
+    }
+
+    public override void SortSurnames()
+    {
+        string[] surnameArray = surnames.Split(new char[] { ',', '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries)
+                                        .Select(s => s.Trim())
+                                        .OrderBy(s => s, StringComparer.CurrentCultureIgnoreCase)
+                                        .ToArray();
+
+        Console.WriteLine("Отсортированный список фамилий:");
+        foreach (string surname in surnameArray)
+        {
+            Console.WriteLine(surname);
+        }
+    }
+}
+
+class Program
+{
+    static void Main()
+    {
+        string surnames = "Иванов\r\nПетров\r\nСмирнов\r\nСоколов\r\nКузнецов\r\nПопов\r\nЛебедев\r\nВолков\r\nКозлов\r\nНовиков\r\nИванова\r\nПетрова\r\nСмирнова";
+
+        Task task = new SortSurnamesTask(surnames);
+        task.SortSurnames();
+    }
+}

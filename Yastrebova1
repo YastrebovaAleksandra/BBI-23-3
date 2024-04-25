@@ -1,0 +1,66 @@
+﻿using System;
+using System.Collections.Generic;
+
+public abstract class Task
+{
+    protected string text;
+
+    public Task(string text)
+    {
+        this.text = text;
+    }
+
+    public abstract void CalculateFrequency();
+}
+
+public class LetterFrequencyTask : Task
+{
+    Dictionary<char, double> frequencies = new Dictionary<char, double>();
+
+    public LetterFrequencyTask(string text) : base(text)
+    {
+    }
+
+    public override void CalculateFrequency()
+    {
+        int totalLetters = 0;
+
+        foreach (char c in text)
+        {
+            if (char.IsLetter(c) && IsRussian(c))
+            {
+                totalLetters++;
+                if (frequencies.ContainsKey(c))
+                {
+                    frequencies[c]++;
+                }
+                else
+                {
+                    frequencies[c] = 1;
+                }
+            }
+        }
+
+        foreach (var pair in frequencies)
+        {
+            double frequency = pair.Value / totalLetters;
+            Console.WriteLine($"Буква '{pair.Key}' встречается с частотой {frequency:P}");
+        }
+    }
+
+    private bool IsRussian(char c)
+    {
+        return (c >= 'а' && c <= 'я') || (c >= 'А' && c <= 'Я') || c == 'ё' || c == 'Ё';
+    }
+}
+
+class Program
+{
+    static void Main()
+    {
+        string text = "Заданный текст для подсчета частоты букв в тексте";
+
+        Task task = new LetterFrequencyTask(text);
+        task.CalculateFrequency();
+    }
+}
