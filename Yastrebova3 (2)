@@ -1,0 +1,192 @@
+﻿using Newtonsoft.Json;
+using System;
+using System.IO;
+
+public class JsonSerializer
+{
+    public static void SerializeObject<T>(T obj, string filePath)
+    {
+        string json = JsonConvert.SerializeObject(obj);
+        File.WriteAllText(filePath, json);
+    }
+
+    public static T DeserializeObject<T>(string filePath)
+    {
+        string json = File.ReadAllText(filePath);
+        return JsonConvert.DeserializeObject<T>(json);
+    }
+}
+public class Serializer
+{
+    public virtual void Serialize<T>(T obj, string filePath)
+    {
+        string json = JsonConvert.SerializeObject(obj);
+        File.WriteAllText(filePath, json);
+    }
+
+    public virtual T Deserialize<T>(string filePath)
+    {
+        string json = File.ReadAllText(filePath);
+        return JsonConvert.DeserializeObject<T>(json);
+    }
+}
+
+public class Student
+{
+    private string _firstName;
+    private string _lastName;
+    private int[] _exams;
+    protected double _averageScore;
+
+    public Student(string firstName, string lastName, int[] exams)
+    {
+        _firstName = firstName;
+        _lastName = lastName;
+        _exams = exams;
+        _averageScore = CalculateAverageScore();
+    }
+
+    public double CalculateAverageScore()
+    {
+        int sum = 0;
+        foreach (int exam in _exams)
+        {
+            sum += exam;
+        }
+        return (double)sum / _exams.Length;
+    }
+
+    public void Print()
+    {
+        Console.WriteLine($"{_lastName} {_firstName} {_averageScore}");
+    }
+}
+
+public class Group
+{
+    protected Student[] _students;
+    protected double _averageScore;
+
+    public Group(Student[] students)
+    {
+        _students = students;
+        _averageScore = CalculateAverageScore();
+    }
+
+    public virtual double CalculateAverageScore()
+    {
+        double totalScore = 0;
+        foreach (Student student in _students)
+        {
+            totalScore += student.CalculateAverageScore();
+        }
+        return totalScore / _students.Length;
+    }
+
+    public virtual void Print()
+    {
+        for (int i = 0; i < _students.Length; i++)
+        {
+            _students[i].Print();
+        }
+        Console.Write(" " + _averageScore);
+        Console.WriteLine();
+    }
+}
+
+public class GroupA : Group
+{
+    public GroupA(Student[] students) : base(students) { }
+
+    public override void Print()
+    {
+        for (int i = 0; i < _students.Length; i++)
+        {
+            _students[i].Print();
+        }
+        Console.Write("A " + _averageScore);
+        Console.WriteLine();
+    }
+}
+
+public class GroupB : Group
+{
+    public GroupB(Student[] students) : base(students) { }
+
+    public override void Print()
+    {
+        for (int i = 0; i < _students.Length; i++)
+        {
+            _students[i].Print();
+        }
+        Console.Write("B " + _averageScore);
+        Console.WriteLine();
+    }
+}
+
+public class GroupC : Group
+{
+    public GroupC(Student[] students) : base(students) { }
+
+    public override void Print()
+    {
+        for (int i = 0; i < _students.Length; i++)
+        {
+            _students[i].Print();
+        }
+        Console.Write("C " + _averageScore);
+        Console.WriteLine();
+    }
+}
+
+internal class Program
+{
+    static void Main(string[] args)
+    {
+        Student[] studentsA = new Student[]
+        {
+        new Student("Mari", "Ivanova", new int[] { 87, 77, 65, 98 }),
+        new Student("Misha", "Smirnov", new int[] { 89, 88, 76, 66 }),
+        };
+
+        Student[] studentsB = new Student[]
+        {
+        new Student("Anton", "Volkov", new int[] { 67, 65, 87, 93 }),
+        new Student("Dasha", "Mishina", new int[] { 68, 59, 67, 88 }),
+        };
+
+        Student[] studentsC = new Student[]
+        {
+        new Student("Kate", "Savina", new int[] { 80, 79, 62, 59 }),
+        new Student("Alex", "Lobov", new int[] { 65, 73, 84, 95 }),
+        };
+
+        Group gr = new Group(studentsC);
+        GroupA groupA = new GroupA(studentsA);
+        GroupB groupB = new GroupB(studentsB);
+        GroupC groupC = new GroupC(studentsC);
+        Group[] groups = new Group[] { groupA, groupB, groupC };
+
+string filePath = @"C:\Users\Yastr\OneDrive\Рабочий стол\Учёба\программирование\group.json";
+        
+        foreach (var group in groups)
+        {
+            JsonSerializer.SerializeObject(group, filePath);
+        }
+
+        Console.WriteLine("Группа\tСредний балл за сессию");
+        foreach (var group in groups)
+        {
+            group.Print();
+        }
+
+        foreach (var group in groups)
+        {
+            Group deserializedGroup = JsonSerializer.DeserializeObject<Group>(filePath);
+            Console.WriteLine("Десериализованная группа:");
+            deserializedGroup.Print();
+        }
+
+        Console.ReadKey();
+    }
+}
