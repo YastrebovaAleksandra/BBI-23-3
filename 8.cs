@@ -187,36 +187,13 @@ class Program
 
     class Task5 : StringTask
     {
-        private IEnumerable<string> words;
-
-        public Task5(string text) : base(text)
+        public override string Process(string input)
         {
-            words = GetWords();
-        }
-
-        public override string ToString()
-        {
-            string res = "Фамилии:\n";
-            foreach (var surname in words.OrderBy(x => x, new CustomStringComparer()))
-            {
-                res += $"{surname}, ";
-            }
-            return res;
-        }
-
-        private IEnumerable<string> GetWords()
-        {
-            return text.Split(new char[] { ' ', ',', '.', ';', ':', '!', '?' }, StringSplitOptions.RemoveEmptyEntries);
-        }
-
-        private class CustomStringComparer : IComparer<string>
-        {
-            public int Compare(string x, string y)
-            {
-                return string.Compare(x, y, StringComparison.OrdinalIgnoreCase);
-            }
+            string[] surnames = input.Split(',').Select(s => s.Trim()).OrderBy(s => s).ToArray();
+            return string.Join(", ", surnames);
         }
     }
+
 
     class Task6 : StringTask
     {
