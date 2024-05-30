@@ -60,7 +60,6 @@ class Athlete : Human
 }
 
 class Program
-
 {
     static void EnsureDirectoryExists(string path)
     {
@@ -71,8 +70,13 @@ class Program
     }
     static void Main(string[] args)
     {
-        string directoryPath = @"C:\Users\Yastr\OneDrive\Рабочий стол\Учёба\программирование\лаб9";
+
+        string filePath = "participants.json";
+
+
+        string directoryPath = Path.Combine(Environment.CurrentDirectory, "participants.json");
         EnsureDirectoryExists(directoryPath);
+
         Athlete[] participants = new Athlete[7]
         {
             new Athlete("Vlad", 1, 2, 7),
@@ -91,19 +95,32 @@ class Program
             participants[i].Print();
         }
 
-        
         Serializer serializer = new Serializer();
-        serializer.SerializeToJson(participants, @"C:\Users\Yastr\OneDrive\Рабочий стол\Учёба\программирование\лаб9");
 
-        
-        Athlete[] loadedParticipants = serializer.DeserializeFromJson<Athlete[]>(@"C:\Users\Yastr\OneDrive\Рабочий стол\Учёба\программирование\лаб9");
 
-        
-        Console.WriteLine("\nЗагруженные участники");
-        Console.WriteLine("Имя   Победы Ничьи Поражения Результат");
-        for (int i = 0; i < loadedParticipants.Length; i++)
+        try
         {
-            loadedParticipants[i].Print();
+            serializer.SerializeToJson(participants, filePath);
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine("Ошибка сохранения данных: " + ex.Message);
+        }
+
+
+        try
+        {
+            Athlete[] loadedParticipants = serializer.DeserializeFromJson<Athlete[]>(filePath);
+            Console.WriteLine("\nЗагруженные участники");
+            Console.WriteLine("Имя   Победы Ничьи Поражения Результат");
+            for (int i = 0; i < loadedParticipants.Length; i++)
+            {
+                loadedParticipants[i].Print();
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine("Ошибка загрузки данных: " + ex.Message);
         }
 
         Console.ReadKey();
