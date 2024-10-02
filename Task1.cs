@@ -1,98 +1,119 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
+using System.Globalization;
 using System.Text;
 using System.Threading.Tasks;
 
-using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Variant_1
+namespace Variant_2
 {
-    public class Task1
+    public struct Point
     {
-        public class Number
+        private int x;
+        private int y;
+        public int X
         {
-            private double real;
-
-            public double Real
-            {
-                get { return real; }
-            }
-
-            public Number(double realNum)
-            {
-                this.real = realNum;
-            }
-
-            public Number Add(Number num)
-            {
-                return new Number(this.real + num.real);
-            }
-
-            public Number Sub(Number other)
-            {
-                return new Number(this.real - other.real);
-            }
-
-            public Number Mul(Number other)
-            {
-                return new Number(this.real * other.real);
-            }
-
-            public Number Div(Number num)
-            {
-                if (num.real != 0)
-                    return new Number(this.real / num.real);
-                else
-                    return new Number(0);
-            }
-
-            public override string ToString()
-            {
-                return $"Number = {this.real}";
-            }
+            get { return x; }
         }
-
-        private Number[] numbers;
-
-        public Number[] Numbers
+        public int Y
         {
-            get { return numbers; }
+            get { return y; }
         }
-
-        public Task1(Number[] number)
+        public Point(int x, int y)
         {
-            this.numbers = number;
+            this.x = x;
+            this.y = y;
         }
-
-        public void Sorting() // insertion sort
-        {
-            for (int i = 1; i < numbers.Length; i++)
-            {
-                Number current = numbers[i];
-                int j = i - 1;
-
-                while (j >= 0 && numbers[j].Real > current.Real)
-                {
-                    numbers[j + 1] = numbers[j];
-                    j--;
-                }
-                numbers[j + 1] = current;
-            }
-        }
-
         public override string ToString()
         {
-            StringBuilder result = new StringBuilder();
-
-            foreach (var number in numbers)
+            return $"x = {x}, y = {y}";
+        }
+        public double Length(Point other)
+        {
+            return Math.Round(Math.Sqrt(Math.Pow(X - other.X, 2) + Math.Pow(Y - other.Y, 2)), 2);
+        }
+        public static string GetDistanceInfo(Point point1, Point point2)
+        {
+            return $"Точка 1: {point1}\nТочка 2: {point2}\nРасстояние между точками: {point1.Length(point2)}";
+        }
+    }
+    public class Task1
+    {
+        private Point[] _points;
+        public Point[] Points
+        {
+            get { return _points; }
+        }
+        public Task1(Point[] points)
+        {
+            if (points.Length != 2)
             {
-                result.AppendLine(number.ToString());
+                throw new ArgumentException("Массив должен содержать две точки.");
+            }
+            _points = points;
+        }
+        public override string ToString()
+        {
+            string result = "";
+            foreach (Point point in _points)
+            {
+                result += point.ToString() + "\n";
+            }
+            return result;
+        }
+        public void Sorting()
+        {
+            QuickSort(_points, 0, _points.Length - 1);
+        }
+        private void QuickSort(Point[] points, int left, int right)
+        {
+            if (left < right)
+            {
+                int pivotIndex = Partition(points, left, right);
+                QuickSort(points, left, pivotIndex - 1);
+                QuickSort(points, pivotIndex + 1, right);
+            }
+        }
+        private int Partition(Point[] points, int left, int right)
+        {
+            Point pivot = points[right];
+            int low = left - 1;
+
+            for (int j = left; j < right; j++)
+            {
+                double dist1 = Math.Sqrt(Math.Pow(points[j].X, 2) + Math.Pow(points[j].Y, 2));
+                double dist2 = Math.Sqrt(Math.Pow(pivot.X, 2) + Math.Pow(pivot.Y, 2));
+
+                if (dist1 <= dist2)
+                {
+                    low++;
+                    Swap(ref points[low], ref points[j]);
+                }
             }
 
-            return result.ToString();
+            Swap(ref points[low + 1], ref points[right]);
+            return low + 1;
+        }
+        private void Swap(ref Point a, ref Point b)
+        {
+            Point temp = a;
+            a = b;
+            b = temp;
+        }
+    }
+    public class Program1
+    {
+        public static void Main(string[] args)
+        {
+            Point point1 = new Point(1, 2);
+            Point point2 = new Point(3, 4);
+            Console.WriteLine(Point.GetDistanceInfo(point1, point2));
+
+            Task1 task1 = new Task1(new Point[] { point1, point2 });
+            Console.WriteLine(task1.ToString());
+
+            task1.Sorting();
+            Console.WriteLine("Отсортированный массив:\n" + task1.ToString());
         }
     }
 }

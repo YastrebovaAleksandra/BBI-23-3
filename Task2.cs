@@ -2,138 +2,166 @@
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
+using static Variant_2.Task2;
 
-namespace Variant_1
+namespace Variant_2
 {
-    public class Task2
+    public struct Point1
     {
-        public class Number
+        private int x;
+        private int y;
+        public int X
         {
-            private double real;
-            public double Real
-            {
-                get
-                {
-                    return real;
-                }
-            }
-            public Number(double realNum)
-            {
-                this.real = realNum;
-            }
-            public Number Add(Number num)
-            {
-                return new Number(this.real + num.real);
-            }
-            public Number Sub(Number other)
-            {
-                return new Number(this.real - other.real);
-            }
-            public Number Mul(Number other)
-            {
-                return new Number(this.real * other.real);
-            }
-            public Number Div(Number num)
-            {
-                if (num.real != 0)
-                    return new Number(this.real / num.real);
-                else
-                    return new Number(0);
-            }
-            public override string ToString()
-            {
-                return "Number = {this.real}";
-            }
+            get { return x; }
         }
-        public class ComplexNumber : Number
+        public int Y
         {
-            public double Imagine { get; }
-
-            public ComplexNumber(double real, double imagine) : base(real)
-            {
-                Imagine = imagine;
-            }
-
-            public ComplexNumber Add(ComplexNumber number)
-            {
-                return new ComplexNumber(this.Real + number.Real, this.Imagine + number.Imagine);
-            }
-
-            public ComplexNumber Sub(ComplexNumber number)
-            {
-                return new ComplexNumber(this.Real - number.Real, this.Imagine - number.Imagine);
-            }
-            public ComplexNumber Mul(ComplexNumber number)
-            {
-                double real = this.Real * number.Real - this.Imagine * number.Imagine;
-                double imagine = this.Real * number.Imagine + this.Imagine * number.Real;
-
-                return new ComplexNumber(real, imagine);
-            }
-            public ComplexNumber Div(ComplexNumber number)
-            {
-                double denominator = number.Real * number.Real + number.Imagine * number.Imagine;
-                double real = (this.Real * number.Real + this.Imagine * number.Imagine) / denominator;
-                double imagine = (this.Imagine * number.Real - this.Real * number.Imagine) / denominator;
-
-                if (number.Real != 0)
-                    return new ComplexNumber(real, imagine);
-                else
-                    return new ComplexNumber(0, 0);
-            }
-            public override string ToString()
-            {
-                return $"Number = {Real} {(Imagine >= 0 ? "+" : "-")} {Math.Abs(Imagine)}i"; //math.abs imagine part always positive
-            }
+            get { return y; }
         }
-        private ComplexNumber[] numbers;
-        public ComplexNumber[] Numbers
+
+        public Point1(int x, int y)
         {
-            get { return numbers; }
-        }
-        public Task2(ComplexNumber[] number)
-        {
-            this.numbers = number;
-        }
-        public void Sorting()
-        {
-            for (int i = 1; i < numbers.Length; i++)
-            {
-                Number key = numbers[i];
-                double keyModulus = 0;
-                if (key is ComplexNumber complexKey)
-                {
-                    keyModulus = Math.Sqrt(complexKey.Real * complexKey.Real + complexKey.Imagine * complexKey.Imagine);
-                }
-                int j = i - 1;
-                while (j >= 0)
-                {
-                    double currentModulus;
-                    if (numbers[j] is ComplexNumber complexNumber)
-                    {
-                        currentModulus = Math.Sqrt(complexNumber.Real * complexNumber.Real + complexNumber.Imagine * complexNumber.Imagine);
-                    }
-                    else
-                    {
-                        currentModulus = Math.Abs(numbers[j].Real);
-                    }
-                    if (currentModulus > keyModulus)
-                    {
-                        numbers[j + 1] = numbers[j];
-                        j--;
-                    }
-                }
-                numbers[j + 1] = (ComplexNumber)key;
-            }
+            this.x = x;
+            this.y = y;
         }
         public override string ToString()
         {
-            string result = string.Empty;
-            foreach (var number in numbers)
+            return $"x = {x}, y = {y}";
+        }
+
+        public double Length(Point other)
+        {
+            return Math.Round(Math.Sqrt(Math.Pow(X - other.X, 2) + Math.Pow(Y - other.Y, 2)), 2);
+        }
+    }
+    public abstract class Fourangle
+    {
+        protected Point[] points;
+        public Fourangle(Point[] points)
+        {
+            if (points.Length != 4)
             {
-                result += number.ToString() + Environment.NewLine;
+                this.points = new Point[4];
+            }
+            else
+            {
+                this.points = points;
+            }
+        }
+        public abstract double Length();
+        public abstract double Area();
+        public override string ToString()
+        {
+            return $"{GetType().Name} with P = {Length():F2}, S = {Area():F2}";
+        }
+    }
+    public class Square : Fourangle
+    {
+        public Square(Point[] points) : base(points) { }
+
+        public override double Length()
+        {
+            double side = points[0].Length(points[1]);
+            return side * 4;
+        }
+
+        public override double Area()
+        {
+            double side = points[0].Length(points[1]);
+            return side * side;
+        }
+    }
+    public class Rectangle : Fourangle
+    {
+        public Rectangle(Point[] points) : base(points) { }
+
+        public override double Length()
+        {
+            double side1 = points[0].Length(points[1]);
+            double side2 = points[1].Length(points[2]);
+            return 2 * (side1 + side2);
+        }
+        public override double Area()
+        {
+            double side1 = points[0].Length(points[1]);
+            double side2 = points[1].Length(points[2]);
+            return side1 * side2;
+        }
+    }
+    public class Task2
+    {
+        private Fourangle[] _fourangles;
+
+        public Fourangle[] Fourangles
+        {
+            get { return _fourangles; }
+        }
+
+        public Task2(Fourangle[] fourangles)
+        {
+            _fourangles = fourangles;
+        }
+        public void Sorting()
+        {
+            QuickSort(_fourangles, 0, _fourangles.Length - 1);
+        }
+        private void QuickSort(Fourangle[] array, int left, int right)
+        {
+            if (left < right)
+            {
+                int pivotIndex = Partition(array, left, right);
+                QuickSort(array, left, pivotIndex - 1);
+                QuickSort(array, pivotIndex + 1, right);
+            }
+        }
+        private int Partition(Fourangle[] array, int left, int right)
+        {
+            Fourangle pivot = array[right];
+            int low = left - 1;
+
+            for (int j = left; j < right; j++)
+            {
+                if (array[j].Area().CompareTo(pivot.Area()) >= 0)
+                {
+                    low++;
+                    Swap(ref array[low], ref array[j]);
+                }
+            }
+
+            Swap(ref array[low + 1], ref array[right]);
+            return low + 1;
+        }
+        private void Swap(ref Fourangle a, ref Fourangle b)
+        {
+            Fourangle temp = a;
+            a = b;
+            b = temp;
+        }
+        public override string ToString()
+        {
+            string result = "";
+            foreach (Fourangle fourangle in _fourangles)
+            {
+                result += fourangle.ToString() + "\n";
             }
             return result;
+        }
+    }    
+    public class Program2
+    {
+        public static void Main(string[] args)
+        {
+            Point[] squarePoints = new Point[] { new Point(0, 0), new Point(1, 0), new Point(1, 1), new Point(0, 1) };
+            Point[] rectanglePoints = new Point[] { new Point(0, 0), new Point(2, 0), new Point(2, 1), new Point(0, 1) };
+            Fourangle[] fourangles = new Fourangle[] { new Square(squarePoints), new Rectangle(rectanglePoints) };
+
+            Task2 task2 = new Task2(fourangles);
+
+            Console.WriteLine(task2.ToString());
+
+            task2.Sorting();
+
+            Console.WriteLine("\nОтсортированный массив:\n" + task2.ToString());
         }
     }
 }
