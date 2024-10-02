@@ -146,6 +146,42 @@ namespace Variant_2
             }
             return result;
         }
+
+        public class Point
+        {
+            private double[] doubles;
+
+            public Point(double[] doubles)
+            {
+                this.doubles = doubles;
+            }
+        }
+
+        public class Square
+        {
+            private Point[] points;
+
+            public Square(Point[] points)
+            {
+                this.points = points;
+            }
+
+            public object Points { get; set; }
+        }
+
+        public class Fourangle
+        {
+        }
+
+        public class Rectangle : Fourangle
+        {
+            private Point[] pointsReversed;
+
+            public Rectangle(Point[] pointsReversed)
+            {
+                this.pointsReversed = pointsReversed;
+            }
+        }
     }    
     public class Program2
     {

@@ -66,6 +66,19 @@ namespace Variant_2
         {
             return Greper.ToString();
         }
+
+        public class Grep
+        {
+            private string nullText;
+
+            public Grep(string nullText)
+            {
+                this.nullText = nullText;
+            }
+
+            public string? Input { get; set; }
+            public object Output { get; set; }
+        }
     }
 
     public class Program

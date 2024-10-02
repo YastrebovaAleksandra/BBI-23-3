@@ -78,6 +78,47 @@ namespace Variant_2
         {
             _greper = new Grep(text);
         }
+
+        public class DataSerializer
+        {
+            public DataSerializer()
+            {
+            }
+
+            public void CreateFile(string path, string[] strings)
+            {
+                throw new NotImplementedException();
+            }
+
+            public void CreateFile(string path, string v)
+            {
+                throw new NotImplementedException();
+            }
+
+            public void CreateFolder(string path, string[] strings)
+            {
+                throw new NotImplementedException();
+            }
+
+            public void CreateFolder(string path, string v)
+            {
+                throw new NotImplementedException();
+            }
+
+            public object Read<T>(string path)
+            {
+                throw new NotImplementedException();
+            }
+
+            public void Write(Task3.Grep greper, string path)
+            {
+                throw new NotImplementedException();
+            }
+        }
+
+        public class IDataSerializer : DataSerializer
+        {
+        }
     }
     public class Program4
     {

@@ -100,6 +100,25 @@ namespace Variant_2
             a = b;
             b = temp;
         }
+
+        public class Point
+        {
+            private double[] doubles;
+
+            public Point()
+            {
+            }
+
+            public Point(double[] doubles)
+            {
+                this.doubles = doubles;
+            }
+
+            public decimal Length(Point zero)
+            {
+                throw new NotImplementedException();
+            }
+        }
     }
     public class Program1
     {
